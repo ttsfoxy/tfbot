@@ -1,4 +1,4 @@
-# тестовый бот титсфоксибот
+# титсфоксибот
 import wikipedia
 import sys
 from ImageParser import YandexImage
