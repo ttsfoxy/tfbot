@@ -810,7 +810,8 @@ class ChatSettings():
             if date:
                 conn.close()
                 return (False)
-            conn.execute("INSERT INTO settings (id) values(?)", (id,))
+            conn.execute("INSERT INTO settings (id) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", 
+                         (id, 'nme', 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
             conn.commit()
             conn.close()
             return (True)
