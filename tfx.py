@@ -254,7 +254,7 @@ class Tfx():
             if chat_lst == []:
                 tip = self.bot.get_chat(message.chat.id).type
                 # print(tip)
-                if tip == 'private' or tip == 'group' or tip == 'supergroup':
+                if tip == 'group' or tip == 'supergroup':
                     self.chat_add(message.chat.id, message.chat.title)
                     chat_lst.append([message.chat.id, message.chat.title])
                     sett = ChatSettings(self.logging, self.connectsql)
@@ -271,7 +271,7 @@ class Tfx():
                 if has_chat is False:
                     tip = self.bot.get_chat(message.chat.id).type
 
-                    if tip == 'private' or tip == 'group' or tip == 'supergroup':
+                    if tip == 'group' or tip == 'supergroup':
                         self.chat_add(message.chat.id, message.chat.title)
                         chat_lst.append([message.chat.id, message.chat.title])
                         sett = ChatSettings(self.logging, self.connectsql)
@@ -478,13 +478,14 @@ class Tfx():
     def acсio(self, message):
         try:
             if "акцио" in message.text.lower():             #
-                sett = ChatSettings(self.logging, self.connectsql)
-                if not sett.get_sett_dict(message.chat.id)['ok']:
-                    x = self.bot.reply_to(message, 'Извините но администратор запретил акцио поиск в ' +
-                                                   'этом чате')
-                    sleep(3)
-                    self.bot.delete_message(x.chat.id, x.id)
-                    return
+                if self.bot.get_chat(message.chat.id).type != 'private':
+                    sett = ChatSettings(self.logging, self.connectsql)
+                    if not sett.get_sett_dict(message.chat.id)['ok']:
+                        x = self.bot.reply_to(message, 'Извините но администратор запретил акцио поиск в ' +
+                                                       'этом чате')
+                        sleep(3)
+                        self.bot.delete_message(x.chat.id, x.id)
+                        return
                 # print(message.text.lower())
                 txt = message.text.lower()                  #
                 txt = txt.split()                           # превращаем в лист
