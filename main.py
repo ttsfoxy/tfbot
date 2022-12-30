@@ -990,6 +990,12 @@ if __name__ == '__main__':
     def get_text_messages(message):
 
         try:
+            if message.via_bot:
+                x = bot.reply_to(message, ' Инлайн боты запрещены в этом чате')
+                time.sleep(5)
+                bot.delete_message(message.chat.id, message.message_id)
+                bot.delete_message(x.chat.id, x.message_id)
+
             karma(message)
             statist(message)
             last_seen(message)

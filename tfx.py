@@ -880,14 +880,17 @@ class ChatSettings():
             conn.close()
 
     def get_sett_dict(self, id):
-        lst = self.get_settings(id)
-        ret_dict = {'id': lst[0], 'name': lst[1], 'owner': lst[2], 'menu': int(lst[3]),
-                    'pinned_mess': int(lst[4]), 'ok': int(lst[5]), 'auto_answer': int(lst[6]),
-                    'sunczi': int(lst[7]), 'karma': int(lst[8]), 'stat': int(lst[9]),
-                    'recognize': int(lst[10]), 'hello_mess': int(lst[11]), 'guiness': int(lst[12]),
-                    'para': int(lst[13]), 'dick': int(lst[14]), 'foxy': int(lst[15]),
-                    'gayday': int(lst[16]), 'wiki': int(lst[17])}
-        return (ret_dict)
+        try:
+            lst = self.get_settings(id)
+            ret_dict = {'id': lst[0], 'name': lst[1], 'owner': lst[2], 'menu': int(lst[3]),
+                        'pinned_mess': int(lst[4]), 'ok': int(lst[5]), 'auto_answer': int(lst[6]),
+                        'sunczi': int(lst[7]), 'karma': int(lst[8]), 'stat': int(lst[9]),
+                        'recognize': int(lst[10]), 'hello_mess': int(lst[11]), 'guiness': int(lst[12]),
+                        'para': int(lst[13]), 'dick': int(lst[14]), 'foxy': int(lst[15]),
+                        'gayday': int(lst[16]), 'wiki': int(lst[17])}
+            return (ret_dict)
+        except Exception:
+            self.logging.error('ERROR get_sett dict ' + lst + str(trback.format_exc()))
 
     def change_owner_chat(self, id, owner):
         try:
