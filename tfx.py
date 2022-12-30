@@ -3,6 +3,12 @@ from time import time as time_now
 from time import sleep
 import traceback as trback
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from uuid import uuid4
+import os
+if os.name != 'nt':
+    from settings_linx import start_dir as strtdr
+elif os.name == 'nt':
+    from settings_win import start_dir as strtdr
 
 
 class Tfx():
@@ -810,7 +816,7 @@ class ChatSettings():
             if date:
                 conn.close()
                 return (False)
-            conn.execute("INSERT INTO settings (id) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", 
+            conn.execute("INSERT INTO settings (id) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                          (id, 'nme', 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
             conn.commit()
             conn.close()
@@ -1227,3 +1233,59 @@ class Menu():
             self.menu_pict(call.message)
         elif call.data == 'menu_pict_delete':
             self.menu_pict(call.message, do='delete', call=call)
+
+
+class DickChat():
+    def __init__(self, bot, logging, connectsql) -> None:
+        self.bot = bot
+        self.logging = logging
+        self.connectsql = connectsql
+        self.chad = 1675780013
+        pass
+
+    def check_chat(self, message):
+        if self.bot.get_chat(message.chat.id).type != 'private':
+            return (False)
+        return (True)
+
+    def get_file(self, message):
+        filename = str(uuid4())
+        filename = strtdr + 'dpicks/' + filename + '.jpg'
+        id_photo = message.photo[-1].file_id
+        file_info = self.bot.get_file(id_photo)
+        downloaded_file = self.bot.download_file(file_info.file_path)
+        with open(filename, 'wb') as new_file:
+            new_file.write(downloaded_file)
+        img = open(filename, 'rb')
+        x = self.bot.send_photo(self.chad, img)
+        self.push_file_to_base(message, filename, x.message_id)
+
+    def push_file_to_base(self, message, filename, id_mess_to):
+        conn = self.connectsql()
+        conn.execute("INSERT INTO dpicks(id, namefile, id_mess_from, id_mess_to) values(?,?,?,?)",
+                     (message.chat.id, filename, message.message_id, id_mess_to))
+        conn.commit()
+        conn.close()
+
+    def get_fbase(self, id_mess_to):
+        conn = self.connectsql()
+        info = conn.execute("SELECT * FROM dpicks where id_mess_to=?", (id_mess_to,))
+        date = info.fetchone()
+        if date is None:
+            self.bot.send_message(self.chad, 'Error in get_tfbase')
+        return (date)
+
+    def reply(self, message):
+        if message.chat.id == self.chad:
+            if message.reply_to_message:
+                tmp = self.get_fbase(message.reply_to_message.message_id)
+                id, namefile, id_mess_from, id_mess_to, likes, dislikes = tuple(tmp)
+                self.bot.send_message(id, message.text, reply_to_message_id=id_mess_from)
+                return (True)
+        return (False)
+
+    def start(self, message):
+        if self.reply(message) is False:
+            if self.check_chat(message):
+                if message.photo:
+                    self.get_file(message)

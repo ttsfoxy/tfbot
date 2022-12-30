@@ -3,7 +3,7 @@ import wikipedia
 import sys
 from ImageParser import YandexImage
 from random import random, randint
-from tfx import Tfx, Gay_band, ChatSettings, MenuSettAdm, Menu, Dp_chan
+from tfx import Tfx, Gay_band, ChatSettings, MenuSettAdm, Menu, Dp_chan, DickChat
 import requests
 from bs4 import BeautifulSoup
 import logging
@@ -840,11 +840,13 @@ Tf_cl = Tfx(bot, randint, time, BeautifulSoup, requests, YandexImage, os,
             uuid, traceback, connectsql, start_dir, logging, types)
 Gay_bnd = Gay_band(bot, logging, connectsql)
 Settings = ChatSettings(logging, connectsql)
-
+Dick_picker = DickChat(bot, logging, connectsql)
 if __name__ == '__main__':
+
     logging.basicConfig(level=logging.INFO, filename=(start_dir + lg_file), format="%(asctime)s \
         - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s")
     logging.info('Started')
+    print('start')
     sund = Tf_cl.read_sunczi(start_dir)
     frase = Tf_cl.read_frases(start_dir)  # считываем фразы в лист
     Tf_cl.readbans(ban)
@@ -941,6 +943,7 @@ if __name__ == '__main__':
 
     @bot.message_handler(content_types=["photo"])
     def get_photo(message):
+        Dick_picker.start(message)
         sett = ChatSettings(logging, connectsql)  # если в базе запрещено возврат назад
         if not sett.get_sett_dict(message.chat.id)['menu']:
             return
@@ -968,6 +971,7 @@ if __name__ == '__main__':
             statist(message)
             last_seen(message)
             okg(message)
+            Dick_picker.start(message)
             Tf_cl.acсio(message)
             if is_admin(message):
                 admin_comms(message)
