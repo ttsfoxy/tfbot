@@ -7,8 +7,10 @@ from uuid import uuid4
 import os
 if os.name != 'nt':
     from settings_linx import start_dir as strtdr
+    from settings_linx import id_dick_pick
 elif os.name == 'nt':
     from settings_win import start_dir as strtdr
+    from settings_win import id_dick_pick
 
 
 class Tfx():
@@ -879,10 +881,12 @@ class ChatSettings():
 
     def get_sett_dict(self, id):
         lst = self.get_settings(id)
-        ret_dict = {'id': lst[0], 'name': lst[1], 'owner': lst[2], 'menu': lst[3], 'pinned_mess': lst[4],
-                    'ok': lst[5], 'auto_answer': lst[6], 'sunczi': lst[7], 'karma': lst[8], 'stat': lst[9],
-                    'recognize': lst[10], 'hello_mess': lst[11], 'guiness': lst[12], 'para': lst[13],
-                    'dick': lst[14], 'foxy': lst[15], 'gayday': lst[16], 'wiki': lst[17]}
+        ret_dict = {'id': lst[0], 'name': lst[1], 'owner': lst[2], 'menu': int(lst[3]),
+                    'pinned_mess': int(lst[4]), 'ok': int(lst[5]), 'auto_answer': int(lst[6]),
+                    'sunczi': int(lst[7]), 'karma': int(lst[8]), 'stat': int(lst[9]),
+                    'recognize': int(lst[10]), 'hello_mess': int(lst[11]), 'guiness': int(lst[12]),
+                    'para': int(lst[13]), 'dick': int(lst[14]), 'foxy': int(lst[15]),
+                    'gayday': int(lst[16]), 'wiki': int(lst[17])}
         return (ret_dict)
 
     def change_owner_chat(self, id, owner):
@@ -1240,7 +1244,7 @@ class DickChat():
         self.bot = bot
         self.logging = logging
         self.connectsql = connectsql
-        self.chad = 1675780013
+        self.chad = id_dick_pick
         pass
 
     def check_chat(self, message):
@@ -1272,16 +1276,21 @@ class DickChat():
         info = conn.execute("SELECT * FROM dpicks where id_mess_to=?", (id_mess_to,))
         date = info.fetchone()
         if date is None:
-            self.bot.send_message(self.chad, 'Error in get_tfbase')
+            # self.bot.send_message(self.chad, 'Error in get_tfbase')
+            pass
         return (date)
 
     def reply(self, message):
         if message.chat.id == self.chad:
             if message.reply_to_message:
-                tmp = self.get_fbase(message.reply_to_message.message_id)
-                id, namefile, id_mess_from, id_mess_to, likes, dislikes = tuple(tmp)
-                self.bot.send_message(id, message.text, reply_to_message_id=id_mess_from)
-                return (True)
+                if message.reply_to_message.photo:
+                    tmp = self.get_fbase(message.reply_to_message.message_id)
+                    id, namefile, id_mess_from, id_mess_to, likes, dislikes = tuple(tmp)
+                    self.bot.send_message(id, message.text, reply_to_message_id=id_mess_from)
+                    x = self.bot.reply_to(message, 'сообщение отправлено автору')
+                    sleep(3)
+                    self.bot.delete_message(x.chat.id, x.message_id)
+                    return (True)
         return (False)
 
     def start(self, message):
@@ -1289,3 +1298,9 @@ class DickChat():
             if self.check_chat(message):
                 if message.photo:
                     self.get_file(message)
+
+    def check_start(self, message):
+        if message.text.lower() == '/start' or message.text.lower() == '/start@tfoxy_bot':
+            self.bot.reply_to(message, 'Приветствую, для того чтобы отослать дикпик, просто ' +
+                              'пришлите фотографию мне, и она будет анонимно автоматически опубликована в ' +
+                              ' дикпик чате от имени бота. Все ответы и лайки будут вам анонимно пересланы')

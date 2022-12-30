@@ -27,9 +27,9 @@ r = sr.Recognizer()
 language = 'ru_RU'
 x = 1
 if os.name != 'nt':
-    from settings_linx import start_dir, id_bot, database_db, lg_file, card_num
+    from settings_linx import start_dir, id_bot, database_db, lg_file, card_num, id_dick_pick
 elif os.name == 'nt':
-    from settings_win import start_dir, id_bot, database_db, lg_file, card_num
+    from settings_win import start_dir, id_bot, database_db, lg_file, card_num, id_dick_pick
 else:
     print('Error in system conw')
     exit()
@@ -56,6 +56,8 @@ def frases(message):            # функция с забавными фраз�
 
     xxx = '@'+str(message.from_user.username)+' '+" ".join(
         frase[randint(0, 37)])
+    if message.chat.id == id_dick_pick:
+        return
     ress = bot.send_message(message.chat.id, xxx)
     time.sleep(10)
     bot.delete_message(message.chat.id, ress.message_id)
@@ -504,7 +506,7 @@ def para(message):      # пара дня
     try:
         sett = ChatSettings(logging, connectsql)
         if not sett.get_sett_dict(message.chat.id)['para']:
-            x = bot.reply_to(message, 'Извините но администратор запретил меряться членами в этом чате')
+            x = bot.reply_to(message, 'Извините но администратор запретил пару дня в этом чате')
             time.sleep(3)
             bot.delete_message(x.chat.id, x.id)
             return
@@ -971,6 +973,7 @@ if __name__ == '__main__':
             statist(message)
             last_seen(message)
             okg(message)
+            Dick_picker.check_start(message)
             Dick_picker.start(message)
             Tf_cl.acсio(message)
             if is_admin(message):
@@ -1060,7 +1063,7 @@ if __name__ == '__main__':
                     message.text.lower() == '/сунцзы':
                 sett = ChatSettings(logging, connectsql)
                 if not sett.get_sett_dict(message.chat.id)['sunczi']:
-                    x = bot.reply_to(message, 'Извините но администратор запретил поиск в этом чате')
+                    x = bot.reply_to(message, 'Извините но администратор запретил эту команду в этом чате')
                     time.sleep(3)
                     bot.delete_message(x.chat.id, x.id)
                     return
