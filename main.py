@@ -45,6 +45,7 @@ def connectsql():                # коннект к базе
         logging.error('CONNECTSQL ERROR ' + db_path + ' ' + str(traceback.format_exc()))
 
 
+dick = 0
 ban = []                    # лист банов в памяти (переделать)
 
 glob_wrk = 0                # глобальный счетчик упоминаний работы (переделать в бд)
@@ -72,7 +73,8 @@ def sunczy(message):                     # отправляем соо из су
 
 def karma(message):
     chsett = ChatSettings(logging, connectsql)
-
+    if bot.get_chat(message.chat.id).type == 'private':
+        return
     if (message.reply_to_message is not None and 'спасибо' in
         message.text.lower() or message.text.startswith('+')) or 'спc' in \
         message.text.lower() \
@@ -203,6 +205,8 @@ def krm_get(id, chat_id):
 
 
 def krm_get_top(message):
+    if bot.get_chat(message.chat.id).type == 'private':
+        return
     sett = ChatSettings(logging, connectsql)
     if not sett.get_sett_dict(message.chat.id)['karma']:
         x = bot.reply_to(message, 'Извините но администратор запретил карму в этом чате')
@@ -233,6 +237,8 @@ def krm_get_top(message):
 
 def statist(message):
     try:
+        if bot.get_chat(message.chat.id).type == 'private':
+            return
         sett = ChatSettings(logging, connectsql)        # если запрет в бд на статку
         if not sett.get_sett_dict(message.chat.id)['stat']:
             return
@@ -273,6 +279,8 @@ def stat_add(name, id_user, id_chat):
 
 
 def stat_get_top(message):
+    if bot.get_chat(message.chat.id).type == 'private':
+        return
     sett = ChatSettings(logging, connectsql)
     if not sett.get_sett_dict(message.chat.id)['stat']:
         x = bot.reply_to(message, 'Извините но администратор запретил карму в этом чате')
@@ -451,6 +459,8 @@ def send_hello_mess(message, text):
 
 def show_guyness(message, from_user=''):
     try:
+        if bot.get_chat(message.chat.id).type == 'private':
+            return
         sett = ChatSettings(logging, connectsql)
         if not sett.get_sett_dict(message.chat.id)['guiness']:
             x = bot.reply_to(message, 'Извините но администратор запретил меряться членами в этом чате')
@@ -485,18 +495,25 @@ def okg(message):
                 in message.text.lower() or 'гугл' == message.text.lower() \
                 or 'google' in message.text.lower():
             sett = ChatSettings(logging, connectsql)
-            if not sett.get_sett_dict(message.chat.id)['ok']:
-                x = bot.reply_to(message, 'Извините но администратор запретил OK поиск в этом чате')
-                time.sleep(3)
-                bot.delete_message(x.chat.id, x.id)
-                return
-            x = Tf_cl.ok_google(message)
-            if x == 0:
-                return
-            if hasattr(message, 'photo'):
-                menu = Menu(bot, logging)
-                menu.menu_okg(x)
-
+            if bot.get_chat(message.chat.id).type != 'private':
+                if not sett.get_sett_dict(message.chat.id)['ok']:
+                    x = bot.reply_to(message, 'Извините но администратор запретил OK поиск в этом чате')
+                    time.sleep(3)
+                    bot.delete_message(x.chat.id, x.id)
+                    return
+                x = Tf_cl.ok_google(message)
+                if x == 0:
+                    return
+                if hasattr(message, 'photo'):
+                    menu = Menu(bot, logging)
+                    menu.menu_okg(x)
+            else:
+                x = Tf_cl.ok_google(message)
+                if x == 0:
+                    return
+                if hasattr(message, 'photo'):
+                    menu = Menu(bot, logging)
+                    menu.menu_okg(x)
     except Exception:
         bot.reply_to(message, 'Извините но ничего не найдено, либо это баг 0')
         logging.error('у меня ошибка в okey goo' + str(traceback.format_exc()))
@@ -584,6 +601,8 @@ def para(message):      # пара дня
 
 def last_seen(message):     # отсев тех кого давно не было
     try:
+        if bot.get_chat(message.chat.id).type == 'private':
+            return
         Tf_cl.chat_check(chat_list, message)  # проверка есть ли этот чат в списке чатов
         conn = connectsql()
         info = conn.execute("SELECT * From last_seen WHERE id_chat=? AND \
@@ -780,6 +799,8 @@ def last_seen_query(message):
 
 def long_sword(message, from_user='', id=0):
     try:
+        if bot.get_chat(message.chat.id).type == 'private':
+            return
         sett = ChatSettings(logging, connectsql)
         if not sett.get_sett_dict(message.chat.id)['guiness']:
             x = bot.reply_to(message, 'Извините но администратор запретил меряться членами в этом чате')
@@ -999,6 +1020,8 @@ if __name__ == '__main__':
             elif 'пара дня' in message.text.lower() or message.text == '/shipping@SHIPPERINGbot':
                 para(message)
             elif 'пидор дня' in message.text.lower() or message.text == '/pidr@tfoxy_bot':
+                if bot.get_chat(message.chat.id).type == 'private':
+                    return
                 sett = ChatSettings(logging, connectsql)
                 if not sett.get_sett_dict(message.chat.id)['gayday']:
                     x = bot.reply_to(message, 'Извините но администратор запретил эту команду в этом чате')
@@ -1010,44 +1033,64 @@ if __name__ == '__main__':
             elif message.text == '/onime' or message.text == '/onime@tfoxy_bot' or \
                     message.text.lower() == '/онимэ' or message.text.lower() == '/анимэ' or \
                     message.text.lower() == '/ониме' or message.text.lower() == '/аниме':
-                sett = ChatSettings(logging, connectsql)
-                if not sett.get_sett_dict(message.chat.id)['ok']:
-                    x = bot.reply_to(message, 'Извините но администратор запретил эту команду в этом чате')
-                    time.sleep(3)
-                    bot.delete_message(x.chat.id, x.id)
-                    return
-                Tf_cl.ok_google(message)
-
-            elif ('вики' in message.text.lower()) and (message.reply_to_message is not None):
-                sett = ChatSettings(logging, connectsql)
-                if not sett.get_sett_dict(message.chat.id)['wiki']:
-                    x = bot.reply_to(message, 'Извините но администратор запретил эту команду в этом чате')
-                    time.sleep(3)
-                    bot.delete_message(x.chat.id, x.id)
-                    return
-                wikipedia.set_lang("ru")
-                tmp_mess = message.reply_to_message.text
-                tmp_mess = wikipedia.search(tmp_mess, results=1)
-                if tmp_mess:
-                    tmp_wiki = wikipedia.summary(tmp_mess[0])
+                if bot.get_chat(message.chat.id).type != 'private':
+                    sett = ChatSettings(logging, connectsql)
+                    if not sett.get_sett_dict(message.chat.id)['ok']:
+                        x = bot.reply_to(message, 'Извините но администратор запретил эту команду ' +
+                                         'в этом чате')
+                        time.sleep(3)
+                        bot.delete_message(x.chat.id, x.id)
+                        return
+                    Tf_cl.ok_google(message)
                 else:
-                    tmp_wiki = wikipedia.summary(wikipedia.suggest(message.reply_to_message.text))
-                ress = bot.reply_to(message, tmp_wiki)
-                time.sleep(60)
-                bot.delete_message(message.chat.id, ress.message_id)
+                    Tf_cl.ok_google(message)
+            elif ('вики' in message.text.lower()) and (message.reply_to_message is not None):
+                if bot.get_chat(message.chat.id).type != 'private':
+                    sett = ChatSettings(logging, connectsql)
+                    if not sett.get_sett_dict(message.chat.id)['wiki']:
+                        x = bot.reply_to(message, 'Извините но администратор запретил эту ' +
+                                         'команду в этом чате')
+                        time.sleep(3)
+                        bot.delete_message(x.chat.id, x.id)
+                        return
+                    wikipedia.set_lang("ru")
+                    tmp_mess = message.reply_to_message.text
+                    tmp_mess = wikipedia.search(tmp_mess, results=1)
+                    if tmp_mess:
+                        tmp_wiki = wikipedia.summary(tmp_mess[0])
+                    else:
+                        tmp_wiki = wikipedia.summary(wikipedia.suggest(message.reply_to_message.text))
+                    ress = bot.reply_to(message, tmp_wiki)
+                    time.sleep(60)
+                    bot.delete_message(message.chat.id, ress.message_id)
+                else:
+                    wikipedia.set_lang("ru")
+                    tmp_mess = message.reply_to_message.text
+                    tmp_mess = wikipedia.search(tmp_mess, results=1)
+                    if tmp_mess:
+                        tmp_wiki = wikipedia.summary(tmp_mess[0])
+                    else:
+                        tmp_wiki = wikipedia.summary(wikipedia.suggest(message.reply_to_message.text))
+                    ress = bot.reply_to(message, tmp_wiki)
+                    time.sleep(60)
+                    bot.delete_message(message.chat.id, ress.message_id)
 
             elif message.text == '/get_photo@tfoxy_bot' or message.text == '/get_photo':  # ####
-                sett = ChatSettings(logging, connectsql)
-                if not sett.get_sett_dict(message.chat.id)['ok']:
-                    x = bot.reply_to(message, 'Извините но администратор запретил поиск в этом чате')
-                    time.sleep(3)
-                    bot.delete_message(x.chat.id, x.id)
-                    return
-                Tf_cl.ok_google(message)
-
+                if bot.get_chat(message.chat.id).type != 'private':
+                    sett = ChatSettings(logging, connectsql)
+                    if not sett.get_sett_dict(message.chat.id)['ok']:
+                        x = bot.reply_to(message, 'Извините но администратор запретил поиск в этом чате')
+                        time.sleep(3)
+                        bot.delete_message(x.chat.id, x.id)
+                        return
+                    Tf_cl.ok_google(message)
+                else:
+                    Tf_cl.ok_google(message)
             elif message.text == '/foxy' or message.text == '/foxy@tfoxy_bot' or \
                 'хочу сиськи' in message.text.lower() or 'акцио сиськи' in message.text.lower() or\
                     message.text.lower() == 'сиськи':
+                if bot.get_chat(message.chat.id).type == 'private':
+                    return
                 sett = ChatSettings(logging, connectsql)
                 if not sett.get_sett_dict(message.chat.id)['foxy']:
                     x = bot.reply_to(message, 'Извините но администратор запретил слать сиськи' +
@@ -1061,6 +1104,8 @@ if __name__ == '__main__':
                 Tf_cl.longsword_game(message)
             elif message.text == '/sunczi' or message.text == '/sunczi@tfoxy_bot' or \
                     message.text.lower() == '/сунцзы':
+                if bot.get_chat(message.chat.id).type == 'private':
+                    return
                 sett = ChatSettings(logging, connectsql)
                 if not sett.get_sett_dict(message.chat.id)['sunczi']:
                     x = bot.reply_to(message, 'Извините но администратор запретил эту команду в этом чате')
