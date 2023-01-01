@@ -239,9 +239,9 @@ def statist(message):
     try:
         if bot.get_chat(message.chat.id).type == 'private':
             return
-        sett = ChatSettings(logging, connectsql)        # если запрет в бд на статку
-        if not sett.get_sett_dict(message.chat.id)['stat']:
-            return
+        # sett = ChatSettings(logging, connectsql)        # если запрет в бд на статку
+        # if not sett.get_sett_dict(message.chat.id)['stat']:
+        #     return
         name = message.from_user.first_name
         if message.from_user.username is None:
             name = message.from_user.first_name
