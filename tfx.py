@@ -1258,21 +1258,34 @@ class DickChat():
         return (True)
 
     def get_file(self, message):
-        filename = str(uuid4())
-        filename = strtdr + 'dpicks/' + filename + '.jpg'
-        id_photo = message.photo[-1].file_id
-        file_info = self.bot.get_file(id_photo)
-        downloaded_file = self.bot.download_file(file_info.file_path)
-        with open(filename, 'wb') as new_file:
-            new_file.write(downloaded_file)
-        img = open(filename, 'rb')
-        x = self.bot.send_photo(self.chad, img)
-        self.push_file_to_base(message, filename, x.message_id)
+        try:
+            filename = str(uuid4())
+            filename = strtdr + 'dpicks/' + filename + '.jpg'
+            id_photo = message.photo[-1].file_id
+            file_info = self.bot.get_file(id_photo)
+            downloaded_file = self.bot.download_file(file_info.file_path)
+            with open(filename, 'wb') as new_file:
+                new_file.write(downloaded_file)
+            img = open(filename, 'rb')
+            x = self.bot.send_photo(self.chad, img)
+            self.call_add(x)
+            likes = self.bot.send_message(message.chat.id, 'Успешно доставлено')
+            self.call_add(likes, iff=1)
+            lkes_message_id = likes.message_id
+            self.push_file_to_base(message, filename, x.message_id, lkes_message_id)
 
-    def push_file_to_base(self, message, filename, id_mess_to):
+        except Exception:
+            self.logging.error('ERROR get file dickpick ' + str(trback.format_exc()))
+            x = self.bot.reply_to(message, 'Извините произошла внутренняя ошибка, попробуйте еще' +
+                                           ' раз отправить!')
+            sleep(3)
+            self.bot.delete_message(x.chat.id, x.message_id)
+
+    def push_file_to_base(self, message, filename, id_mess_to, lkes_message):
         conn = self.connectsql()
-        conn.execute("INSERT INTO dpicks(id, namefile, id_mess_from, id_mess_to) values(?,?,?,?)",
-                     (message.chat.id, filename, message.message_id, id_mess_to))
+        conn.execute("""INSERT INTO dpicks(id, namefile, id_mess_from, id_mess_to, lkes_message)
+                     values(?,?,?,?,?)""",
+                     (message.chat.id, filename, message.message_id, id_mess_to, lkes_message))
         conn.commit()
         conn.close()
 
@@ -1291,7 +1304,7 @@ class DickChat():
                 if message.reply_to_message.photo:
                     tmp = self.get_fbase(message.reply_to_message.message_id)
                     if tmp:
-                        id, namefile, id_mess_from, id_mess_to, likes, dislikes = tuple(tmp)
+                        id, namefile, id_mess_from, id_mess_to, likes, dislikes, lkes_message = tuple(tmp)
                         try:
                             self.bot.send_message(id, message.text, reply_to_message_id=id_mess_from)
                         except Exception:
@@ -1330,3 +1343,74 @@ class DickChat():
                                   'пересланы ботом.\n' +
                                   'Для получения инструкций для администраторов групп и уточнения ' +
                                   'возможностей бота обратитесь к @Titsfoxy')
+
+    def call_add(self, message, iff=0):
+        if iff == 0:
+            callback_button_1 = InlineKeyboardButton(text="💓 0",
+                                                     callback_data=('dick_pick+'))
+            callback_button_2 = InlineKeyboardButton(text="🖤 0",
+                                                     callback_data=('dick_pick-'))
+            keyboard = InlineKeyboardMarkup()
+            keyboard.add(callback_button_1, callback_button_2)
+            self.bot.edit_message_reply_markup(message.chat.id, message.message_id, reply_markup=keyboard)
+        else:
+            callback_button_1 = InlineKeyboardButton(text="💓 0",
+                                                     callback_data=('None'))
+            callback_button_2 = InlineKeyboardButton(text="🖤 0",
+                                                     callback_data=('None'))
+            keyboard = InlineKeyboardMarkup()
+            keyboard.add(callback_button_1, callback_button_2)
+            self.bot.edit_message_reply_markup(message.chat.id, message.message_id, reply_markup=keyboard)
+
+    def recognize_callback(self, call):
+        if call.data == 'dick_pick+':
+            x = call.message.json['reply_markup']['inline_keyboard'][0][0]['text']
+            x = x[-1]
+            x = '💓 ' + str(int(x) + 1)
+            # print(x)
+            callback_button_1 = InlineKeyboardButton(text=x,
+                                                     callback_data=('dick_pick+'))
+            y = call.message.json['reply_markup']['inline_keyboard'][0][1]['text']
+            callback_button_2 = InlineKeyboardButton(text=y,
+                                                     callback_data=('dick_pick-'))
+            keyboard = InlineKeyboardMarkup()
+            keyboard.add(callback_button_1, callback_button_2)
+            self.bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,
+                                               reply_markup=keyboard)
+            tmp = self.get_fbase(call.message.message_id)
+            if tmp:
+                callback_button_1 = InlineKeyboardButton(text=x,
+                                                         callback_data=('None'))
+                y = call.message.json['reply_markup']['inline_keyboard'][0][1]['text']
+                callback_button_2 = InlineKeyboardButton(text=y,
+                                                         callback_data=('None'))
+                keyboard = InlineKeyboardMarkup()
+                keyboard.add(callback_button_1, callback_button_2)
+                id, namefile, id_mess_from, id_mess_to, likes, dislikes, lkes_message = tuple(tmp)
+                self.bot.edit_message_reply_markup(id, lkes_message, reply_markup=keyboard)
+
+        elif call.data == 'dick_pick-':
+            x = call.message.json['reply_markup']['inline_keyboard'][0][0]['text']
+            # print(x)
+            callback_button_1 = InlineKeyboardButton(text=x,
+                                                     callback_data=('dick_pick+'))
+            y = call.message.json['reply_markup']['inline_keyboard'][0][1]['text']
+            y = y[-1]
+            y = '🖤 ' + str(int(y) + 1)
+            callback_button_2 = InlineKeyboardButton(text=y,
+                                                     callback_data=('dick_pick-'))
+            keyboard = InlineKeyboardMarkup()
+            keyboard.add(callback_button_1, callback_button_2)
+            self.bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id,
+                                               reply_markup=keyboard)
+            tmp = self.get_fbase(call.message.message_id)
+            if tmp:
+                callback_button_1 = InlineKeyboardButton(text=x,
+                                                         callback_data=('None'))
+                # y = call.message.json['reply_markup']['inline_keyboard'][0][1]['text']
+                callback_button_2 = InlineKeyboardButton(text=y,
+                                                         callback_data=('None'))
+                keyboard = InlineKeyboardMarkup()
+                keyboard.add(callback_button_1, callback_button_2)
+                id, namefile, id_mess_from, id_mess_to, likes, dislikes, lkes_message = tuple(tmp)
+                self.bot.edit_message_reply_markup(id, lkes_message, reply_markup=keyboard)

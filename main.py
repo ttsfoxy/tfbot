@@ -927,9 +927,13 @@ if __name__ == '__main__':
             elif call.data == 'set_ok_bot_off' or call.data == 'set_ok_bot_on':
                 MenSett = MenuSettAdm(bot, logging, connectsql)
                 MenSett.recognize_callback(call)
+            elif call.data == 'None':
+                pass
             else:
                 menu = Menu(bot, logging)
                 menu.recognize_menu_comms(call)
+                Dick_picker.recognize_callback(call)
+
         except Exception:
             # print('error in cap_query\n' + str(traceback.format_exc()))
             logging.error('error in cap_query ' + str(traceback.format_exc()))
