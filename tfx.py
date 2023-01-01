@@ -1282,7 +1282,7 @@ class DickChat():
         date = info.fetchone()
         if date is None:
             # self.bot.send_message(self.chad, 'Error in get_tfbase')
-            pass
+            return (False)
         return (date)
 
     def reply(self, message):
@@ -1290,12 +1290,23 @@ class DickChat():
             if message.reply_to_message:
                 if message.reply_to_message.photo:
                     tmp = self.get_fbase(message.reply_to_message.message_id)
-                    id, namefile, id_mess_from, id_mess_to, likes, dislikes = tuple(tmp)
-                    self.bot.send_message(id, message.text, reply_to_message_id=id_mess_from)
-                    x = self.bot.reply_to(message, 'сообщение отправлено автору')
-                    sleep(3)
-                    self.bot.delete_message(x.chat.id, x.message_id)
-                    return (True)
+                    if tmp:
+                        id, namefile, id_mess_from, id_mess_to, likes, dislikes = tuple(tmp)
+                        try:
+                            self.bot.send_message(id, message.text, reply_to_message_id=id_mess_from)
+                        except Exception:
+                            try:
+                                self.bot.send_message(id, message.text)
+                            except Exception:
+                                x = self.bot.reply_to(message, 'автор заблокировал бота, отправка ' +
+                                                               'невозможна :(')
+                                sleep(3)
+                                self.bot.delete_message(x.chat.id, x.message_id)
+                        x = self.bot.reply_to(message, 'сообщение отправлено автору')
+                        sleep(3)
+                        self.bot.delete_message(x.chat.id, x.message_id)
+                        return (True)
+
         return (False)
 
     def start(self, message):
@@ -1306,6 +1317,16 @@ class DickChat():
 
     def check_start(self, message):
         if message.text.lower() == '/start' or message.text.lower() == '/start@tfoxy_bot':
-            self.bot.reply_to(message, 'Приветствую, для того чтобы отослать дикпик, просто ' +
-                              'пришлите фотографию мне, и она будет анонимно автоматически опубликована в ' +
-                              ' дикпик чате от имени бота. Все ответы и лайки будут вам анонимно пересланы')
+            if self.bot.get_chat(message.chat.id).type != 'private':
+                x = self.bot.reply_to(message, 'Извините но эта команда предназначена для использования в ' +
+                                               'личке бота!')
+                self.bot.delete_message(message.chat.id, message.message_id)
+                sleep(3)
+                self.bot.delete_message(x.chat.id, x.message_id)
+            else:
+                self.bot.reply_to(message, 'Приветствую, для того чтобы отослать дикпик, просто ' +
+                                  'пришлите фотографию мне, и она будет анонимно автоматически опубликована' +
+                                  ' в дикпик чате от имени бота. Все ответы и лайки будут вам анонимно ' +
+                                  'пересланы ботом.\n' +
+                                  'Для получения инструкций для администраторов групп и уточнения ' +
+                                  'возможностей бота обратитесь к @Titsfoxy')
