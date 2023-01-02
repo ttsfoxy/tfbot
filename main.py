@@ -521,6 +521,9 @@ def okg(message):
 
 def para(message):      # пара дня
     try:
+        if bot.get_chat(message.chat.id).type == 'private':
+            bot.reply_to(message, 'Извините, в личке игра не работает )))')
+            return
         sett = ChatSettings(logging, connectsql)
         if not sett.get_sett_dict(message.chat.id)['para']:
             x = bot.reply_to(message, 'Извините но администратор запретил пару дня в этом чате')
@@ -970,13 +973,15 @@ if __name__ == '__main__':
 
     @bot.message_handler(content_types=["photo"])
     def get_photo(message):
-        Dick_picker.start(message)
-        sett = ChatSettings(logging, connectsql)  # если в базе запрещено возврат назад
-        if not sett.get_sett_dict(message.chat.id)['menu']:
-            return
-        x = bot.reply_to(message, 'Меню автора фото')
-        menu = Menu(bot, logging)
-        menu.menu_pict(x)
+        if bot.get_chat(message.chat.id).type != 'private':
+            sett = ChatSettings(logging, connectsql)  # если в базе запрещено возврат назад
+            if not sett.get_sett_dict(message.chat.id)['menu']:
+                return
+            x = bot.reply_to(message, 'Меню автора фото')
+            menu = Menu(bot, logging)
+            menu.menu_pict(x)
+        else:
+            Dick_picker.start(message)
 
     @bot.message_handler(content_types=["pinned_message"])
     def get_pinned(message):
@@ -1100,7 +1105,9 @@ if __name__ == '__main__':
                 'хочу сиськи' in message.text.lower() or 'акцио сиськи' in message.text.lower() or\
                     message.text.lower() == 'сиськи':
                 if bot.get_chat(message.chat.id).type == 'private':
+                    bot.reply_to(message, 'Сорян но эта команда не работает в лс')
                     return
+
                 sett = ChatSettings(logging, connectsql)
                 if not sett.get_sett_dict(message.chat.id)['foxy']:
                     x = bot.reply_to(message, 'Извините но администратор запретил слать сиськи' +

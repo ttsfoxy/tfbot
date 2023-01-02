@@ -420,6 +420,9 @@ class Tfx():
 
     def longsword_game(self, message):
         try:
+            if self.bot.get_chat(message.chat.id).type == 'private':
+                self.bot.reply_to(message, 'Извините, в личке игра не работает )))')
+                return
             lst_dicks = self.longsword_game_get(message.chat.id, self.time.time())
             if lst_dicks is False:
                 self.bot.reply_to(message, 'Что то пошло не так')
@@ -892,7 +895,7 @@ class ChatSettings():
                         'gayday': int(lst[16]), 'wiki': int(lst[17])}
             return (ret_dict)
         except Exception:
-            self.logging.error('ERROR get_sett dict ' + lst + str(trback.format_exc()))
+            self.logging.error('ERROR get_sett dict ' + str(trback.format_exc()))
 
     def change_owner_chat(self, id, owner):
         try:
