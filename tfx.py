@@ -965,12 +965,221 @@ class ChatSettings():
         finally:
             conn.close()
 
+    def change_auto_answer(self, id, aa):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET auto_answer=? where id=?", (aa, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR auto_answer ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def change_sunczi(self, id, sz):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET sunczi=? where id=?", (sz, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change sunczi ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def change_karma(self, id, karma):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET karma=? where id=?", (karma, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change_karma ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def change_stat(self, id, stat):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET stat=? where id=?", (stat, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change_stat ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def change_recognize(self, id, recognize):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET recognize=? where id=?", (recognize, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change_recognize ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def change_hello_mess(self, id, hello_mess):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET hello_mess=? where id=?", (hello_mess, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change_hello_mess ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def change_guiness(self, id, guiness):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET guyness=? where id=?", (guiness, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change_guiness ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def change_para(self, id, para):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET para=? where id=?", (para, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change_para ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def change_dick(self, id, dick):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET dick=? where id=?", (dick, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change_dick ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def change_foxy(self, id, foxy):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET foxy=? where id=?", (foxy, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change_foxy ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def change_gayday(self, id, gayday):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET gayday=? where id=?", (gayday, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change_gayday ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def change_wiki(self, id, wiki):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET wiki=? where id=?", (wiki, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change_wiki ' + str(trback.format_exc()))
+        finally:
+            conn.close()
 # (id, name=None, owner=None,meny=None,pinned_mess=None)
 # если id то создаем новую запись
 
-    def set_settings_chat(self, id, name=None, owner=None, menu=None, pinned_mess=None, ok=None):
+    def set_settings_chat(self, id, name=None, owner=None, menu=None, pinned_mess=None, ok=None,
+                          auto_answer=None, sunczi=None, karma=None, stat=None, recognize=None,
+                          hello_mess=None, guiness=None, para=None, dick=None, foxy=None, gayday=None,
+                          wiki=None):
         try:
-            if id and name is None and owner is None and menu is None and pinned_mess is None and ok is None:
+            if (id and name is None and owner is None and menu is None and pinned_mess is None and ok is None
+               and auto_answer is None and sunczi is None and karma is None and stat is None
+               and recognize is None and hello_mess is None and guiness is None and para is None
+               and dick is None and foxy is None and gayday is None and wiki is None):
                 if self.new_chat(id):
                     return (True)           # если только id chat
                 else:
@@ -999,6 +1208,66 @@ class ChatSettings():
                     return (False)
             if ok is not None:
                 if self.change_ok(id, ok):
+                    pass
+                else:
+                    return (False)
+            if auto_answer is not None:
+                if self.change_auto_answer(id, auto_answer):
+                    pass
+                else:
+                    return (False)
+            if sunczi is not None:
+                if self.change_sunczi(id, sunczi):
+                    pass
+                else:
+                    return (False)
+            if karma is not None:
+                if self.change_karma(id, karma):
+                    pass
+                else:
+                    return (False)
+            if stat is not None:
+                if self.change_stat(id, stat):
+                    pass
+                else:
+                    return (False)
+            if recognize is not None:
+                if self.change_recognize(id, recognize):
+                    pass
+                else:
+                    return (False)
+            if hello_mess is not None:
+                if self.change_hello_mess(id, hello_mess):
+                    pass
+                else:
+                    return (False)
+            if guiness is not None:
+                if self.change_guiness(id, guiness):
+                    pass
+                else:
+                    return (False)
+            if para is not None:
+                if self.change_para(id, para):
+                    pass
+                else:
+                    return (False)
+            if dick is not None:
+                if self.change_dick(id, dick):
+                    pass
+                else:
+                    return (False)
+            if foxy is not None:
+                if self.change_foxy(id, foxy):
+                    pass
+                else:
+                    return (False)
+            if gayday is not None:
+                if self.change_gayday(id, gayday):
+                    pass
+                else:
+                    return (False)
+            if wiki is not None:
+                if self.change_wiki(id, wiki):
                     pass
                 else:
                     return (False)
@@ -1050,12 +1319,141 @@ class MenuSettAdm():
         except Exception:
             self.logging.error('ERROR set_fuckin_menu ' + str(trback.format_exc()))
 
+    def set_menu(self, chat_id_to_send, chat_id_rewr):
+        chsett = ChatSettings(self.logging, self.connectsql)
+        dict_sett = chsett.get_sett_dict(chat_id_rewr)
+        # print(dict_sett)
+        if dict_sett['menu']:
+            txt = 'Автоматические меню ✅'  # 🛑✅
+            btn_1 = InlineKeyboardButton(text=txt, callback_data=('set_menu_off'))
+        else:
+            txt = 'Автоматические меню 🛑'
+            btn_1 = InlineKeyboardButton(text=txt, callback_data=('set_menu_on'))
+
+        if dict_sett['pinned_mess']:
+            txt = 'Добавление закрепов ✅'  # 🛑✅
+            btn_2 = InlineKeyboardButton(text=txt, callback_data=('pinned_mess_off'))
+        else:
+            txt = 'Добавление закрепов 🛑'
+            btn_2 = InlineKeyboardButton(text=txt, callback_data=('pinned_mess_on'))
+
+        if dict_sett['ok']:
+            txt = 'Поиск через ок и акцио ✅'  # 🛑✅
+            btn_3 = InlineKeyboardButton(text=txt, callback_data=('set_ok_bot_off'))
+        else:
+            txt = 'Поиск через ок и акцио 🛑'
+            btn_3 = InlineKeyboardButton(text=txt, callback_data=('set_ok_bot_on'))
+
+        if dict_sett['auto_answer']:
+            txt = 'Автоболталка бота ✅'  # 🛑✅ #############################
+            btn_4 = InlineKeyboardButton(text=txt, callback_data=('auto_answer_off'))
+        else:
+            txt = 'Автоболталка бота 🛑'
+            btn_4 = InlineKeyboardButton(text=txt, callback_data=('auto_answer_on'))
+
+        if dict_sett['sunczi']:
+            txt = 'Суньцзи цитаты ✅'  # 🛑✅
+            btn_5 = InlineKeyboardButton(text=txt, callback_data=('sunczi_off'))
+        else:
+            txt = 'Суньцзи цитаты 🛑'
+            btn_5 = InlineKeyboardButton(text=txt, callback_data=('sunczi_on'))
+
+        if dict_sett['karma']:
+            txt = 'Карма ✅'  # 🛑✅
+            btn_6 = InlineKeyboardButton(text=txt, callback_data=('karma_off'))
+        else:
+            txt = 'Карма 🛑'
+            btn_6 = InlineKeyboardButton(text=txt, callback_data=('karma_on'))
+
+        if dict_sett['stat']:
+            txt = 'Статистика ✅'  # 🛑✅
+            btn_7 = InlineKeyboardButton(text=txt, callback_data=('stat_off'))
+        else:
+            txt = 'Статистика 🛑'
+            btn_7 = InlineKeyboardButton(text=txt, callback_data=('stat_on'))
+
+        if dict_sett['recognize']:
+            txt = 'Распознавание голоса ✅'  # 🛑✅
+            btn_8 = InlineKeyboardButton(text=txt, callback_data=('recognize_off'))
+        else:
+            txt = 'Распознавание голоса 🛑'
+            btn_8 = InlineKeyboardButton(text=txt, callback_data=('recognize_on'))
+
+        if dict_sett['hello_mess']:
+            txt = 'Приветственное сообщение ✅'  # 🛑✅
+            btn_9 = InlineKeyboardButton(text=txt, callback_data=('hello_mess_off'))
+        else:
+            txt = 'Приветственное сообщение 🛑'
+            btn_9 = InlineKeyboardButton(text=txt, callback_data=('hello_mess_on'))
+
+        if dict_sett['guiness']:
+            txt = 'гей на % ✅'  # 🛑✅
+            btn_10 = InlineKeyboardButton(text=txt, callback_data=('guiness_off'))
+        else:
+            txt = 'гей на % 🛑'
+            btn_10 = InlineKeyboardButton(text=txt, callback_data=('guiness_on'))
+
+        if dict_sett['para']:
+            txt = 'Пара дня ✅'  # 🛑✅
+            btn_11 = InlineKeyboardButton(text=txt, callback_data=('para_off'))
+        else:
+            txt = 'Пара дня 🛑'
+            btn_11 = InlineKeyboardButton(text=txt, callback_data=('para_on'))
+
+        if dict_sett['dick']:
+            txt = 'Член см ✅'  # 🛑✅
+            btn_12 = InlineKeyboardButton(text=txt, callback_data=('dick_off'))
+        else:
+            txt = 'Член см 🛑'
+            btn_12 = InlineKeyboardButton(text=txt, callback_data=('dick_on'))
+        if dict_sett['foxy']:
+            txt = 'Команда foxy ✅'  # 🛑✅
+            btn_13 = InlineKeyboardButton(text=txt, callback_data=('foxy_off'))
+        else:
+            txt = 'Команда foxy 🛑'
+            btn_13 = InlineKeyboardButton(text=txt, callback_data=('foxy_on'))
+
+        if dict_sett['gayday']:
+            txt = 'Гей дня ✅'  # 🛑✅
+            btn_14 = InlineKeyboardButton(text=txt, callback_data=('gayday_off'))
+        else:
+            txt = 'гей дня 🛑'
+            btn_14 = InlineKeyboardButton(text=txt, callback_data=('gayday_on'))
+
+        if dict_sett['wiki']:
+            txt = 'Википедия ✅'  # 🛑✅
+            btn_15 = InlineKeyboardButton(text=txt, callback_data=('wiki_off'))
+        else:
+            txt = 'Википедия 🛑'
+            btn_15 = InlineKeyboardButton(text=txt, callback_data=('wiki_on'))
+
+        keyboard = InlineKeyboardMarkup()
+        keyboard.add(btn_1)
+        keyboard.add(btn_2)
+        keyboard.add(btn_3)
+        keyboard.add(btn_4)
+        keyboard.add(btn_5)
+        keyboard.add(btn_6, btn_7)
+        # keyboard.add()
+        keyboard.add(btn_8)
+        keyboard.add(btn_9)
+        keyboard.add(btn_10, btn_11)
+        # keyboard.add()
+        keyboard.add(btn_12, btn_14)
+        keyboard.add(btn_13)
+        # keyboard.add()
+        keyboard.add(btn_15)
+        self.bot.send_message(chat_id_to_send, f'меню настроек бота для чата {chat_id_rewr}',
+                              reply_markup=keyboard)
+
     def start_comm_owner(self, message):
         try:
-            self.set_fuckin_menu(message.from_user.id, message.chat.id)
+            # self.set_fuckin_menu(message.from_user.id, message.chat.id)
+            self.set_menu(message.from_user.id, message.chat.id)
         except Exception:
-            x = self.bot.send_message(message.chat.id, 'бот в личке заблокирован! Нужно написать боту в' +
+            x = self.bot.send_message(message.chat.id, 'бот в личке заблокирован! Нужно написать боту в ' +
                                       'лс и перезапустить команду!')
+            self.logging.error('ERROR strtcomm ' + str(trback.format_exc()))
             sleep(5)
             self.bot.delete_message(x.chat.id, x.message_id)
 
@@ -1074,77 +1472,170 @@ class MenuSettAdm():
             id_chat = int(id_chat[-1])
             # print(id_chat)
             if self.is_owner(id_chat, call.from_user.id):
-                if call.data == 'set_add_bot':
+                if call.data == 'pinned_mess_on':
                     ChatSett = ChatSettings(self.logging, self.connectsql)
                     ChatSett.set_settings_chat(id_chat, pinned_mess=True)
-                    callback_button_1 = InlineKeyboardButton(text="Разрешить меню(бета)",
-                                                             callback_data=('set_menu'))
-                    callback_button_2 = InlineKeyboardButton(text="Запретить добавление в бота",
-                                                             callback_data=('unset_add_bot'))
-                    callback_button_3 = InlineKeyboardButton(text="Запретить поиск через ок и акцио",
-                                                             callback_data=('set_ok_bot_off'))
-                    keyboard = InlineKeyboardMarkup()
-                    keyboard.add(callback_button_1)
-                    keyboard.add(callback_button_2)
-                    keyboard.add(callback_button_3)
-                    self.bot.edit_message_reply_markup(call.message.chat.id, call.message.id,
-                                                       reply_markup=keyboard)
-                    x = self.bot.send_message(call.message.chat.id, 'Выполнено, разрешено размещение')
-                    sleep(2)
-                    self.bot.delete_message(x.chat.id, x.message_id)
-                elif call.data == 'unset_add_bot':
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'pinned_mess_off':
                     ChatSett = ChatSettings(self.logging, self.connectsql)
                     ChatSett.set_settings_chat(id_chat, pinned_mess=False)
-                    callback_button_1 = InlineKeyboardButton(text="Разрешить меню(бета)           ",
-                                                             callback_data=('set_menu'))
-                    callback_button_2 = InlineKeyboardButton(text="Разрешить добавление в бота",
-                                                             callback_data=('set_add_bot'))
-                    keyboard = InlineKeyboardMarkup()
-                    keyboard.add(callback_button_1)
-                    keyboard.add(callback_button_2)
-                    self.bot.edit_message_reply_markup(call.message.chat.id, call.message.id,
-                                                       reply_markup=keyboard)
-                    x = self.bot.send_message(call.message.chat.id, 'Выполнено, запрещено размещение')
-                    sleep(2)
-                    self.bot.delete_message(x.chat.id, x.message_id)
-                elif call.data == 'set_ok_bot_off':
-                    ChatSett = ChatSettings(self.logging, self.connectsql)
-                    ChatSett.set_settings_chat(id_chat, ok=True)
-                    keyboard = InlineKeyboardMarkup()
-                    callback_button_1 = InlineKeyboardButton(text="Разрешить меню(бета)",
-                                                             callback_data=('set_menu'))
-                    callback_button_2 = InlineKeyboardButton(text="Разрешить добавление в бота",
-                                                             callback_data=('set_add_bot'))
-                    callback_button_3 = InlineKeyboardButton(text="Разрешить поиск через ок и акцио",
-                                                             callback_data=('set_ok_bot_on'))
-                    keyboard.add(callback_button_1)
-                    keyboard.add(callback_button_2)
-                    keyboard.add(callback_button_3)
-                    self.bot.edit_message_reply_markup(call.message.chat.id, call.message.id,
-                                                       reply_markup=keyboard)
-                    x = self.bot.send_message(call.message.chat.id, 'Выполнено, запрещен поиск')
-                    sleep(2)
-                    self.bot.delete_message(x.chat.id, x.message_id)
-                    # ###########
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
                 elif call.data == 'set_ok_bot_on':
                     ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, ok=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'set_ok_bot_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
                     ChatSett.set_settings_chat(id_chat, ok=False)
-                    keyboard = InlineKeyboardMarkup()
-                    callback_button_1 = InlineKeyboardButton(text="Разрешить меню(бета)",
-                                                             callback_data=('set_menu'))
-                    callback_button_2 = InlineKeyboardButton(text="Разрешить добавление в бота",
-                                                             callback_data=('set_add_bot'))
-                    callback_button_3 = InlineKeyboardButton(text="Запретить поиск через ок и акцио",
-                                                             callback_data=('set_ok_bot_off'))
-                    keyboard.add(callback_button_1)
-                    keyboard.add(callback_button_2)
-                    keyboard.add(callback_button_3)
-                    self.bot.edit_message_reply_markup(call.message.chat.id, call.message.id,
-                                                       reply_markup=keyboard)
-                    x = self.bot.send_message(call.message.chat.id, 'Выполнено, разрешен поиск')
-                    sleep(2)
-                    self.bot.delete_message(x.chat.id, x.message_id)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
 
+                elif call.data == 'set_menu_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, menu=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'set_menu_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, menu=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'auto_answer_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, auto_answer=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'auto_answer_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, auto_answer=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'sunczi_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, sunczi=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'sunczi_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, sunczi=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'karma_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, karma=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'karma_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, karma=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'stat_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, stat=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'stat_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, stat=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'recognize_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, recognize=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'recognize_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, recognize=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'hello_mess_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, hello_mess=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'hello_mess_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, hello_mess=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'guiness_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, guiness=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'guiness_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, guiness=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'para_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, para=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'para_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, para=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'dick_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, dick=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'dick_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, dick=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'foxy_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, foxy=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'foxy_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, foxy=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'gayday_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, gayday=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'gayday_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, gayday=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'wiki_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, wiki=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'wiki_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, wiki=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
         except Exception:
             self.logging.error('ERROR recognize_callback ' + str(trback.format_exc()))
 

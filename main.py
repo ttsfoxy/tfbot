@@ -881,7 +881,12 @@ if __name__ == '__main__':
     @bot.callback_query_handler(func=lambda call: True)
     def all_query(call):
         try:
-
+            menu_adm = ['pinned_mess_on', 'pinned_mess_off', 'set_ok_bot_on', 'set_ok_bot_off',
+                        'set_menu_on', 'set_menu_off', 'auto_answer_on', 'auto_answer_off', 'sunczi_on',
+                        'sunczi_off', 'karma_on', 'karma_off', 'stat_on', 'stat_off', 'recognize_on',
+                        'recognize_off', 'hello_mess_on', 'hello_mess_off', 'guiness_on', 'guiness_off',
+                        'para_on', 'para_off', 'dick_on', 'dick_off', 'foxy_on', 'foxy_off', 'gayday_on',
+                        'gayday_off', 'wiki_on', 'wiki_off']
             if call.data[1] == 0:
                 # print('ошибка получения аргумента в callback query')
                 logging.error('ошибка получения аргумента в callback query ' + str(traceback.format_exc()))
@@ -922,12 +927,13 @@ if __name__ == '__main__':
                                                                'но это не ваше фото')
                     time.sleep(3)
                     bot.delete_message(x.chat.id, x.message_id)
+
             elif call.data == 'set_add_bot' or call.data == 'unset_add_bot':
                 MenSett = MenuSettAdm(bot, logging, connectsql)
                 MenSett.recognize_callback(call)
                 # bot.edit_message_reply_markup(call.chat.id,call.message.id,reply_markup=)
             # elif
-            elif call.data == 'set_ok_bot_off' or call.data == 'set_ok_bot_on':
+            elif call.data in menu_adm:
                 MenSett = MenuSettAdm(bot, logging, connectsql)
                 MenSett.recognize_callback(call)
             elif call.data == 'None':
