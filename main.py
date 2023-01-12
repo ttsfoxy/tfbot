@@ -75,11 +75,10 @@ def karma(message):
     chsett = ChatSettings(logging, connectsql)
     if bot.get_chat(message.chat.id).type == 'private':
         return
-    if (message.reply_to_message is not None and 'спасибо' in
-        message.text.lower() or message.text.startswith('+')) or 'спc' in \
-        message.text.lower() \
-        or 'сяп' in message.text.lower() \
-            and message.reply_to_message.from_user.id != message.from_user.id:
+    if ((message.reply_to_message is not None and 'спасибо' in
+        message.text.lower() or message.text.startswith('+ ') or message.text.startswith('++'))
+            or 'спc' in message.text.lower() or 'сяп' in message.text.lower()
+            and message.reply_to_message.from_user.id != message.from_user.id):
         if not chsett.get_sett_dict(message.chat.id)['karma']:
             x = bot.reply_to(message, 'Извините но администратор запретил карму в этом чате')
             time.sleep(3)
@@ -385,7 +384,7 @@ def admin_comms(message):               # ##########
             logging.error('у меня ошибка внутренняя adm comms' +
                           str(traceback.format_exc()))
             # print('у меня ошибка внутренняя' + str(traceback.format_exc()))
-    if message.text == '/start_owner':
+    if message.text == '/start_owner' or message.text == '/start_owner@tfoxy_bot':
         if bot.get_chat_member(message.chat.id, message.from_user.id).status == 'creator':
             if Settings.set_settings_chat(message.chat.id, owner=message.from_user.id):
                 x = bot.reply_to(message, 'Выполнено')
@@ -843,6 +842,18 @@ def dicker(message):
     return
 
 
+def rulez(message):
+    conn = connectsql()
+    chat_id = message.chat.id
+    info = conn.execute("SELECT * FROM new_member_hello where id=?",
+                        (chat_id,))
+    date = info.fetchone()
+    if date is None:
+        return (False)
+    conn.close()
+    send_hello_mess(message, date[1])
+
+
 def send_rnd_pin(message, nme=0):
     img = Tf_cl.send_rnd_from(message)
     if img:
@@ -1024,6 +1035,8 @@ if __name__ == '__main__':
                 krm_get_top(message)
             elif message.text == '/stat_chan@tfoxy_bot':
                 stat_get_top(message)
+            elif message.text.lower() == 'правила':
+                rulez(message)
             if Tf_cl.banans(ban, message):
                 return
             if '!ро' in message.text.lower():
