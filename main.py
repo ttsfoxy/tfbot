@@ -27,9 +27,9 @@ r = sr.Recognizer()
 language = 'ru_RU'
 x = 1
 if os.name != 'nt':
-    from settings_linx import start_dir, id_bot, database_db, lg_file, card_num, id_dick_pick
+    from settings_linx import start_dir, id_bot, database_db, lg_file, card_num, id_dick_pick, me
 elif os.name == 'nt':
-    from settings_win import start_dir, id_bot, database_db, lg_file, card_num, id_dick_pick
+    from settings_win import start_dir, id_bot, database_db, lg_file, card_num, id_dick_pick, me
 else:
     print('Error in system conw')
     exit()
@@ -77,7 +77,7 @@ def karma(message):
         return
     if ((message.reply_to_message is not None and 'спасибо' in
         message.text.lower() or message.text.startswith('+ ') or message.text.startswith('++'))
-            or 'спc' in message.text.lower() or 'сяп' in message.text.lower()
+            or 'спc' in message.text.lower() or 'сяп' in message.text.lower() or message.text == '+'
             and message.reply_to_message.from_user.id != message.from_user.id):
         if not chsett.get_sett_dict(message.chat.id)['karma']:
             x = bot.reply_to(message, 'Извините но администратор запретил карму в этом чате')
@@ -103,7 +103,7 @@ def karma(message):
         bot.send_message(message.chat.id, f'{user_to}\nУвеличение рейтинга на\
                                     1  🟢\nBсего: {msg_ret} \nот @{user_from} ')
     elif (message.reply_to_message is not None and
-          message.text.startswith('-')) \
+          message.text.startswith('- ') or message.text == '-') \
             and message.reply_to_message.from_user.id != message.from_user.id:
         krm_sub(message.reply_to_message.from_user.id,
                 message.reply_to_message.from_user.first_name, message.chat.id)
@@ -385,9 +385,10 @@ def admin_comms(message):               # ##########
                           str(traceback.format_exc()))
             # print('у меня ошибка внутренняя' + str(traceback.format_exc()))
     if message.text == '/start_owner' or message.text == '/start_owner@tfoxy_bot':
-        if bot.get_chat_member(message.chat.id, message.from_user.id).status == 'creator':
+        if (bot.get_chat_member(message.chat.id, message.from_user.id).status == 'creator'
+           or message.from_user.id == me):  # вторая проверка позволяет владельцу бота дополнительно менять
             if Settings.set_settings_chat(message.chat.id, owner=message.from_user.id):
-                x = bot.reply_to(message, 'Выполнено')
+                x = bot.reply_to(message, 'Выполнено')  # настройки чата по прозьбе админов
                 MenSett = MenuSettAdm(bot, logging, connectsql)
                 MenSett.start_comm_owner(message)
                 time.sleep(5)
@@ -925,13 +926,15 @@ if __name__ == '__main__':
                     x = bot.send_message(call.message.chat.id, 'Закреплено!',
                                          reply_to_message_id=call.message.reply_to_message.id)
                     # bot.delete_message(call.message.chat.id, call.message.id)
-                    time.sleep(3)
+                    time.sleep(2)
+                    bot.delete_message(call.message.chat.id, call.message.id)
                     bot.delete_message(x.chat.id, x.message_id)
                 elif call.from_user.id == 1675780013:
                     Tf_cl.get_file_pinned(call.message.reply_to_message)
                     x = bot.send_message(call.message.chat.id, 'Закреплено by Tf!',
                                          reply_to_message_id=call.message.reply_to_message.id)
-                    time.sleep(3)
+                    time.sleep(1)
+                    bot.delete_message(call.message.chat.id, call.message.id)
                     bot.delete_message(x.chat.id, x.message_id)
                 else:
                     x = bot.send_message(call.message.chat.id, f'Извините @{call.from_user.first_name} ' +

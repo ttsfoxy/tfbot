@@ -7,10 +7,10 @@ from uuid import uuid4
 import os
 if os.name != 'nt':
     from settings_linx import start_dir as strtdr
-    from settings_linx import id_dick_pick
+    from settings_linx import id_dick_pick, me
 elif os.name == 'nt':
     from settings_win import start_dir as strtdr
-    from settings_win import id_dick_pick
+    from settings_win import id_dick_pick, me
 
 
 class Tfx():
@@ -1463,7 +1463,10 @@ class MenuSettAdm():
         if real_owner == owner:
             return (True)
         else:
-            return (False)
+            if owner == me:
+                return (True)
+            else:
+                return (False)
 
     def recognize_callback(self, call):
         try:
@@ -1767,6 +1770,8 @@ class DickChat():
             self.call_add(likes, iff=1)
             lkes_message_id = likes.message_id
             self.push_file_to_base(message, filename, x.message_id, lkes_message_id)
+            sleep(2)
+            os.remove(filename)
 
         except Exception:
             self.logging.error('ERROR get file dickpick ' + str(trback.format_exc()))
