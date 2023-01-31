@@ -3,7 +3,7 @@ import wikipedia
 import sys
 from ImageParser import YandexImage
 from random import random, randint
-from tfx import Tfx, Gay_band, ChatSettings, MenuSettAdm, Menu, Dp_chan, DickChat
+from tfx import Tfx, Gay_band, ChatSettings, MenuSettAdm, Menu, Dp_chan, DickChat, AutoDel
 import requests
 from bs4 import BeautifulSoup
 import logging
@@ -100,8 +100,9 @@ def karma(message):
         else:
             user_from = message.from_user.username
 
-        bot.send_message(message.chat.id, f'{user_to}\nУвеличение рейтинга на\
+        x = bot.send_message(message.chat.id, f'{user_to}\nУвеличение рейтинга на\
                                     1  🟢\nBсего: {msg_ret} \nот @{user_from} ')
+        Autodelete.autodel(x.chat.id, x.id)
     elif (message.reply_to_message is not None and
           message.text.startswith('- ') or message.text == '-') \
             and message.reply_to_message.from_user.id != message.from_user.id:
@@ -120,9 +121,10 @@ def karma(message):
         else:
             user_from = message.from_user.username
 
-        bot.send_message(message.chat.id, f'{user_to}\nУменьшение рейтинга на \
+        x = bot.send_message(message.chat.id, f'{user_to}\nУменьшение рейтинга на \
                                              1  🔴\nBсего: {msg_ret} \nот \
                                              @{user_from} ')
+        Autodelete.autodel(x.chat.id, x.id)
 
 
 def name_user(message):
@@ -293,9 +295,10 @@ def stat_get_top(message):
     try:
         file_name_full = krm_viev(date, 'wrk1.jpg')
         img = open(file_name_full, 'rb')
-        bot.send_photo(message.chat.id, img, reply_to_message_id=message.id)
+        x = bot.send_photo(message.chat.id, img, reply_to_message_id=message.id)
         img.close()
         os.remove(file_name_full)
+        Autodelete.autodel(x.chat.id, x.id)
     except Exception:
         logging.error('stat_get_top ' + str(traceback.format_exc()))
         conn.close()
@@ -420,7 +423,8 @@ def admin_comms(message):               # ##########
             snd_text = f'{time.ctime(tmp_var[1][0][0])}  \n{tmp_var[1][0][1]}'
             for x in chat_list:
                 try:
-                    bot.send_message(x[0], snd_text)
+                    x = bot.send_message(x[0], snd_text)
+                    Autodelete.autodel(x.chat.id, x.id)
                 except Exception:
                     logging.error(f'ERROR send updates of bot  to {x[0]}' + str(traceback.format_exc()))
 
@@ -473,16 +477,17 @@ def show_guyness(message, from_user=''):
                                                            callback_data=('guyness'))
             keyboard.add(callback_button_1)
             gness = randint(0, 100)
-            bot.send_message(message.chat.id, f'{from_user.first_name} гей на {gness}%  🏳️‍🌈',
-                             reply_markup=keyboard)
+            x = bot.send_message(message.chat.id, f'{from_user.first_name} гей на {gness}%  🏳️‍🌈',
+                                 reply_markup=keyboard)
+            Autodelete.autodel(x.chat.id, x.id)
         else:
             callback_button_1 = types.InlineKeyboardButton(text="Узнать свой результат 🏳️‍🌈",
                                                            callback_data=('guyness'))
             keyboard.add(callback_button_1)
             gness = randint(0, 100)
-            bot.send_message(message.chat.id, f'{message.from_user.first_name} гей на {gness}% 🏳️‍🌈',
-                             reply_markup=keyboard)
-
+            x = bot.send_message(message.chat.id, f'{message.from_user.first_name} гей на {gness}% 🏳️‍🌈',
+                                 reply_markup=keyboard)
+            Autodelete.autodel(x.chat.id, x.id)
     except Exception:
         logging.error('SHOW GUYNESS ' + str(traceback.format_exc()))
 
@@ -507,6 +512,7 @@ def okg(message):
                 if hasattr(message, 'photo'):
                     menu = Menu(bot, logging)
                     menu.menu_okg(x)
+                    Autodelete.autodel(x.chat.id, x.id)
             else:
                 x = Tf_cl.ok_google(message)
                 if x == 0:
@@ -514,6 +520,7 @@ def okg(message):
                 if hasattr(message, 'photo'):
                     menu = Menu(bot, logging)
                     menu.menu_okg(x)
+                    Autodelete.autodel(x.chat.id, x.id)
     except Exception:
         bot.reply_to(message, 'Извините но ничего не найдено, либо это баг 0')
         logging.error('у меня ошибка в okey goo' + str(traceback.format_exc()))
@@ -662,11 +669,13 @@ def get_all_by_name(message):
         if info.fetchone() is None:
 
             try:
-                bot.send_message(message.from_user.id, f'Извините ничего не \
+                x = bot.send_message(message.from_user.id, f'Извините ничего не \
                     найдено по запросу {srch_txt}')
+                Autodelete.autodel(x.chat.id, x.id)
             except Exception:
-                bot.reply_to(message, 'Для успешной активации команды нужно \
+                x = bot.reply_to(message, 'Для успешной активации команды нужно \
                     написать боту в личку хотябы 1 раз')
+                Autodelete.autodel(x.chat.id, x.id)
         else:
             info = conn.execute("SELECT * FROM get_in where name=?", (srch_txt,))
             date = info.fetchone()
@@ -693,8 +702,9 @@ def get_all_by_name(message):
             try:
                 bot.send_message(message.from_user.id, res)
             except Exception:
-                bot.reply_to(message, 'Для успешной активации команды нужно\
+                x = bot.reply_to(message, 'Для успешной активации команды нужно\
                             написать боту в личку хотябы 1 раз')
+                Autodelete.autodel(x.chat.id, x.id)
         conn.close()
     else:
         bot.reply_to(message, 'Эта команда должна быть ответом на сообщение!')
@@ -824,11 +834,13 @@ def long_sword(message, from_user='', id=0):
                                                   'см на эти сутки')
             menu = Menu(bot, logging)
             menu.menu_dick(x)
+            Autodelete.autodel(x.chat.id, x.id)
         else:
             x = bot.send_message(message.chat.id, f'у @{message.from_user.first_name} член' +
                                                   f' {str(gness)} см 🏳️')
             menu = Menu(bot, logging)
             menu.menu_dick(x)
+            Autodelete.autodel(x.chat.id, x.id)
     except Exception:
         logging.error('LONG SWORD BUG' + str(traceback.format_exc()))
 
@@ -863,11 +875,13 @@ def send_rnd_pin(message, nme=0):
                                                        callback_data=('rnd_pin'))
         keyboard.add(callback_button_1)
         if nme == 0:
-            bot.send_photo(message.chat.id, img, caption=f'Ня @{message.from_user.username}',
-                           reply_markup=keyboard)
+            x = bot.send_photo(message.chat.id, img, caption=f'Ня @{message.from_user.username}',
+                               reply_markup=keyboard)
+            Autodelete.autodel(x.chat.id, x.id)
         else:
-            bot.send_photo(message.chat.id, img, caption=f'Ня @{nme}',
-                           reply_markup=keyboard)
+            x = bot.send_photo(message.chat.id, img, caption=f'Ня @{nme}',
+                               reply_markup=keyboard)
+            Autodelete.autodel(x.chat.id, x.id)
 # #####################################################################################################
 
 
@@ -879,6 +893,7 @@ Tf_cl = Tfx(bot, randint, time, BeautifulSoup, requests, YandexImage, os,
 Gay_bnd = Gay_band(bot, logging, connectsql)
 Settings = ChatSettings(logging, connectsql)
 Dick_picker = DickChat(bot, logging, connectsql)
+Autodelete = AutoDel(logging, bot, connectsql)
 if __name__ == '__main__':
 
     logging.basicConfig(level=logging.INFO, filename=(start_dir + lg_file), format="%(asctime)s \
@@ -912,9 +927,11 @@ if __name__ == '__main__':
             elif call.data == 'ls_game':
                 Tf_cl.longsword_game(call.message)
             elif call.data == 'spons':
-                bot.send_message(call.message.chat.id, f'@{call.from_user.first_name}' +
-                                 f' номер карты {card_num} Спасибо! ')
-                bot.send_message(call.message.chat.id, '❤️‍🔥')
+                x = bot.send_message(call.message.chat.id, f'@{call.from_user.first_name}' +
+                                     f' номер карты {card_num} Спасибо! ')
+                Autodelete.autodel(x.chat.id, x.id)
+                x = bot.send_message(call.message.chat.id, '❤️‍🔥')
+                Autodelete.autodel(x.chat.id, x.id)
                 # ❤️‍🔥
 
             elif call.data == 'rnd_pin':

@@ -1913,3 +1913,147 @@ class DickChat():
                 keyboard.add(callback_button_1, callback_button_2)
                 id, namefile, id_mess_from, id_mess_to, likes, dislikes, lkes_message = tuple(tmp)
                 self.bot.edit_message_reply_markup(id, lkes_message, reply_markup=keyboard)
+
+
+class AutoDel():
+    def __init__(self, logging, bot, connectsql) -> None:
+        self.logging = logging
+        self.bot = bot
+        self.connectsql = connectsql
+        pass
+
+    def init_counter(self, id_chat, settings_count):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM counters WHERE id_chat=?", (id_chat,))
+            date = info.fetchone()
+            if date is not None:
+                conn.close()
+                return (False)
+            conn.execute("INSERT INTO counters (id_chat, counter, settings_count) values(?,?,?)",
+                         (id_chat, 1, settings_count))
+            conn.commit()
+            conn.close()
+            return (True)
+        except Exception:
+            self.logging.error('ERROR init_counter ' + str(trback.format_exc()))
+
+    def delete(self, id_chat):
+        try:
+            conn = self.connectsql()
+            conn.execute("DELETE FROM counters WHERE id_chat=?", (id_chat,))
+            conn.commit()
+            conn.close()
+            return (True)
+        except Exception:
+            self.logging.error('ERROR autodel delete ' + str(trback.format_exc()))
+            return (False)
+
+    def get_counter(self, id_chat):
+        conn = self.connectsql()
+        info = conn.execute("SELECT * FROM counters WHERE id_chat=?", (id_chat,))
+        date = info.fetchone()
+        if date is None:
+            conn.close()
+            self.counter_plus(id_chat)
+            return (self.get_counter(id_chat))
+        else:
+            conn.close()
+            return (date)
+
+    def autodel(self, id_chat, id_message):
+        self.add(id_chat, id_message)
+        self.wrk(id_chat)
+
+    def counter_plus(self, id_chat):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM counters WHERE id_chat=?", (id_chat,))
+            date = info.fetchone()
+            if date is None:
+                self.init_counter(id_chat, 10)
+                conn.close()
+            else:
+                conn.execute("UPDATE counters SET counter=counter + 1 where id_chat=?", (id_chat,))
+                conn.commit()
+                conn.close()
+        except Exception:
+            self.logging.error('ERROR autodel counter + ' + str(trback.format_exc()))
+
+    def add(self, id_chat, id_message):
+        try:
+            conn = self.connectsql()
+            conn.execute("INSERT INTO to_del(id_chat, id_msg) values(?,?)", (id_chat, id_message))
+            conn.commit()
+            conn.close()
+            self.counter_plus(id_chat)
+        except Exception:
+            self.logging.error('ERROR autodel add ' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def del_mess_bd(self, id_chat, id_message):
+        try:
+            conn = self.connectsql()
+            conn.execute("DELETE FROM to_del WHERE id_chat=? and id_msg=?", (id_chat, id_message))
+            conn.commit()
+            conn.close()
+            return (True)
+        except Exception:
+            self.logging.error('ERROR autodel del msg ' + str(trback.format_exc()))
+            return (False)
+        finally:
+            conn.close()
+
+    def del_mess(self, id_chat):
+        lst_msg = self.get_msg(id_chat)
+        # lst_msg = lst_msg[0]
+        # print(lst_msg)
+        for x in lst_msg:
+            try:
+                self.bot.delete_message(x[0], x[1])
+            except Exception:
+                self.logging.error('ERROR autodel del mess' + str(trback.format_exc()))
+            finally:
+                self.del_mess_bd(x[0], x[1])
+
+    def get_msg(self, id_chat):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM to_del WHERE id_chat=?", (id_chat,))
+            date = info.fetchall()
+            if date is None:
+                conn.close()
+                return (False)
+            else:
+                # date = info.fetchall()
+                ret_list = []
+                for x in date:
+                    ret_list.append([x[0], x[1]])
+                conn.close()
+                return (ret_list)
+        except Exception:
+            self.logging.error('ERROR autodel get ' + str(trback.format_exc()))
+            return (False)
+
+    def update_counter(self, id_chat):
+        try:
+            conn = self.connectsql()
+            conn.execute("UPDATE counters SET counter=1 where id_chat=?", (id_chat,))
+            conn.commit()
+            conn.close()
+        except Exception:
+            self.logging.error('ERROR autodel update_counter' + str(trback.format_exc()))
+        finally:
+            conn.close()
+
+    def wrk(self, chat_id):
+        try:
+            d_chat, counter, sett_cnt = self.get_counter(chat_id)
+            if counter > sett_cnt:
+                self.del_mess(chat_id)
+                self.update_counter(chat_id)
+            else:
+                self.counter_plus(chat_id)
+        except Exception:
+            self.logging.error('ERROR autodel wrk ' + str(trback.format_exc()))
