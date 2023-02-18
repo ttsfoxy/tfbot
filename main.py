@@ -913,7 +913,7 @@ if __name__ == '__main__':
                         'sunczi_off', 'karma_on', 'karma_off', 'stat_on', 'stat_off', 'recognize_on',
                         'recognize_off', 'hello_mess_on', 'hello_mess_off', 'guiness_on', 'guiness_off',
                         'para_on', 'para_off', 'dick_on', 'dick_off', 'foxy_on', 'foxy_off', 'gayday_on',
-                        'gayday_off', 'wiki_on', 'wiki_off']
+                        'gayday_off', 'wiki_on', 'wiki_off', 'set_actio_bot_off', 'set_actio_bot_on']
             if call.data[1] == 0:
                 # print('ошибка получения аргумента в callback query')
                 logging.error('ошибка получения аргумента в callback query ' + str(traceback.format_exc()))
@@ -1114,6 +1114,9 @@ if __name__ == '__main__':
                         tmp_wiki = wikipedia.summary(tmp_mess[0])
                     else:
                         tmp_wiki = wikipedia.summary(wikipedia.suggest(message.reply_to_message.text))
+                    # 4 096
+
+                    tmp_wiki = tmp_wiki[0:4096]
                     ress = bot.reply_to(message, tmp_wiki)
                     time.sleep(60)
                     bot.delete_message(message.chat.id, ress.message_id)

@@ -491,7 +491,7 @@ class Tfx():
             if "акцио" in message.text.lower():             #
                 if self.bot.get_chat(message.chat.id).type != 'private':
                     sett = ChatSettings(self.logging, self.connectsql)
-                    if not sett.get_sett_dict(message.chat.id)['ok']:
+                    if not sett.get_sett_dict(message.chat.id)['actio']:
                         x = self.bot.reply_to(message, 'Извините но администратор запретил акцио поиск в ' +
                                                        'этом чате')
                         sleep(3)
@@ -822,9 +822,10 @@ class ChatSettings():
                 conn.close()
                 return (False)
             conn.execute("""INSERT INTO settings (id, name, owner, menu, pinned_mess, ok, auto_answer,
-                         sunczi, karma, stat, recognize, hello_mess, guyness, para, dick, foxy, gayday, wiki)
-                         values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                         (id, 'nme', 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
+                         sunczi, karma, stat, recognize, hello_mess, guyness, para, dick, foxy, gayday, wiki,
+                         actio)
+                         values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                         (id, 'nme', 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
             conn.commit()
             conn.close()
             return (True)
@@ -892,7 +893,7 @@ class ChatSettings():
                         'sunczi': int(lst[7]), 'karma': int(lst[8]), 'stat': int(lst[9]),
                         'recognize': int(lst[10]), 'hello_mess': int(lst[11]), 'guiness': int(lst[12]),
                         'para': int(lst[13]), 'dick': int(lst[14]), 'foxy': int(lst[15]),
-                        'gayday': int(lst[16]), 'wiki': int(lst[17])}
+                        'gayday': int(lst[16]), 'wiki': int(lst[17]), 'actio': int(lst[18])}
             return (ret_dict)
         except Exception:
             self.logging.error('ERROR get_sett dict ' + str(trback.format_exc()))
@@ -1168,18 +1169,35 @@ class ChatSettings():
             self.logging.error('ERROR change_wiki ' + str(trback.format_exc()))
         finally:
             conn.close()
+
+    def change_actio(self, id, actio):
+        try:
+            conn = self.connectsql()
+            info = conn.execute("SELECT * FROM settings WHERE id=?", (id,))
+            date = info.fetchone()
+            if date:
+                conn.execute("UPDATE settings SET actio=? where id=?", (actio, id))
+                conn.commit()
+                conn.close()
+                return (True)
+            conn.close()
+            return (False)
+        except Exception:
+            self.logging.error('ERROR change_actio ' + str(trback.format_exc()))
+        finally:
+            conn.close()
 # (id, name=None, owner=None,meny=None,pinned_mess=None)
 # если id то создаем новую запись
 
     def set_settings_chat(self, id, name=None, owner=None, menu=None, pinned_mess=None, ok=None,
                           auto_answer=None, sunczi=None, karma=None, stat=None, recognize=None,
                           hello_mess=None, guiness=None, para=None, dick=None, foxy=None, gayday=None,
-                          wiki=None):
+                          wiki=None, actio=None):
         try:
             if (id and name is None and owner is None and menu is None and pinned_mess is None and ok is None
                and auto_answer is None and sunczi is None and karma is None and stat is None
                and recognize is None and hello_mess is None and guiness is None and para is None
-               and dick is None and foxy is None and gayday is None and wiki is None):
+               and dick is None and foxy is None and gayday is None and wiki is None and actio is None):
                 if self.new_chat(id):
                     return (True)           # если только id chat
                 else:
@@ -1271,6 +1289,11 @@ class ChatSettings():
                     pass
                 else:
                     return (False)
+            if actio is not None:
+                if self.change_actio(id, actio):
+                    pass
+                else:
+                    return (False)
             return (True)
         except Exception:
             self.logging.error('ERROR set_settings_chat ' + str(trback.format_exc()))
@@ -1338,11 +1361,18 @@ class MenuSettAdm():
             btn_2 = InlineKeyboardButton(text=txt, callback_data=('pinned_mess_on'))
 
         if dict_sett['ok']:
-            txt = 'Поиск через ок и акцио ✅'  # 🛑✅
+            txt = 'Поиск OK ✅'  # 🛑✅
             btn_3 = InlineKeyboardButton(text=txt, callback_data=('set_ok_bot_off'))
         else:
-            txt = 'Поиск через ок и акцио 🛑'
+            txt = 'Поиск OK 🛑'
             btn_3 = InlineKeyboardButton(text=txt, callback_data=('set_ok_bot_on'))
+
+        if dict_sett['actio']:
+            txt = 'Поиск акцио ✅'  # 🛑✅
+            btn_actio = InlineKeyboardButton(text=txt, callback_data=('set_actio_bot_off'))
+        else:
+            txt = 'Поиск акцио 🛑'  # 🛑✅
+            btn_actio = InlineKeyboardButton(text=txt, callback_data=('set_actio_bot_on'))
 
         if dict_sett['auto_answer']:
             txt = 'Автоболталка бота ✅'  # 🛑✅ #############################
@@ -1430,7 +1460,7 @@ class MenuSettAdm():
         keyboard = InlineKeyboardMarkup()
         keyboard.add(btn_1)
         keyboard.add(btn_2)
-        keyboard.add(btn_3)
+        keyboard.add(btn_3, btn_actio)
         keyboard.add(btn_4)
         keyboard.add(btn_5)
         keyboard.add(btn_6, btn_7)
@@ -1637,6 +1667,17 @@ class MenuSettAdm():
                 elif call.data == 'wiki_off':
                     ChatSett = ChatSettings(self.logging, self.connectsql)
                     ChatSett.set_settings_chat(id_chat, wiki=False)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+
+                elif call.data == 'set_actio_bot_on':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, actio=True)
+                    self.bot.delete_message(call.message.chat.id, call.message.id)
+                    self.set_menu(call.from_user.id, id_chat)
+                elif call.data == 'set_actio_bot_off':
+                    ChatSett = ChatSettings(self.logging, self.connectsql)
+                    ChatSett.set_settings_chat(id_chat, actio=False)
                     self.bot.delete_message(call.message.chat.id, call.message.id)
                     self.set_menu(call.from_user.id, id_chat)
         except Exception:
